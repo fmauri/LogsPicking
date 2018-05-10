@@ -1,6 +1,7 @@
 #include <iostream>
 #include "PollardRho/PollarRho.h"
 #include "WeinerKangaroo/WeinerKangaroo.h"
+#include "PohlingHellman/PohlingHellman.h"
 
 int main() {
     NTL::ZZ result;
@@ -19,6 +20,14 @@ int main() {
     WeinerKangaroo weinerKangaroo;
     weinerKangaroo.printLog();
     result = weinerKangaroo.searchCollisions();
+    std::cout << "x = " << result << std::endl;
+    /*
+     * PohlingHellman
+     */
+    std::cout << "\nPohling Hellman\n";
+    PohlingHellman pohlingHellman;
+    pohlingHellman.printLog();
+    result = pohlingHellman.searchResult();
     std::cout << "x = " << result << std::endl;
     return 0;
 }

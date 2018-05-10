@@ -3,3 +3,9 @@
 //
 
 #include "PohlingHellman.h"
+
+NTL::ZZ PohlingHellman::searchResult() {
+    NTL::ZZ result = NTL::ZZ(0);
+
+    return result;
+}
