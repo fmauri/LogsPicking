@@ -21,7 +21,9 @@ public:
     }
 
     PollarRho(NTL::ZZ alpha, NTL::ZZ beta, NTL::ZZ N) {
-        //TODO make proper constrctor
+        this->alpha = alpha;
+        this->beta = beta;
+        this->N = N;
     }
 
     NTL::ZZ searchXParallelPollard();
