@@ -20,6 +20,10 @@ public:
         beta = NTL::PowerMod(alpha, x, N);
     }
 
+    PollarRho(NTL::ZZ alpha, NTL::ZZ beta, NTL::ZZ N) {
+        //TODO make proper constrctor
+    }
+
     NTL::ZZ searchXParallelPollard();
 
 private:

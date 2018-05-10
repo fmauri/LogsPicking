@@ -16,6 +16,7 @@ protected:
     NTL::ZZ beta;
 public:
     inline void printLog();
+
 };
 
 void DiscreteLog::printLog() {
