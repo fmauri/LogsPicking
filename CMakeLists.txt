@@ -10,6 +10,6 @@ if (OPENMP_FOUND)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif ()
 
-add_executable(LogsPicking main.cpp PollardRho/PollarRho.cpp PollardRho/PollarRho.h DiscreteLog.h WeinerKangaroo/WeinerKangaroo.cpp WeinerKangaroo/WeinerKangaroo.h)
+add_executable(LogsPicking main.cpp PollardRho/PollarRho.cpp PollardRho/PollarRho.h DiscreteLog.h WeinerKangaroo/WeinerKangaroo.cpp WeinerKangaroo/WeinerKangaroo.h PohlingHellman/PohlingHellman.cpp PohlingHellman/PohlingHellman.h)
 
 target_link_libraries(LogsPicking ntl m gmp)

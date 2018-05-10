@@ -15,6 +15,7 @@ int main() {
      * Kangaroo Pollar Rho
      */
     WeinerKangaroo weinerKangaroo;
+    weinerKangaroo.printLog();
     result = weinerKangaroo.searchCollisions();
     return 0;
 }
