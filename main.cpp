@@ -17,5 +17,6 @@ int main() {
     WeinerKangaroo weinerKangaroo;
     weinerKangaroo.printLog();
     result = weinerKangaroo.searchCollisions();
+    std::cout << "x = " << result;
     return 0;
 }
