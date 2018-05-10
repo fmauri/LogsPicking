@@ -14,9 +14,9 @@ class WeinerKangaroo : public DiscreteLog {
 public:
     WeinerKangaroo() {
         x = NTL::RandomBnd(lower - upper) + upper;
-        alpha = setAlpha();
+        alpha = this->setAlpha();
         beta = NTL::PowerMod(alpha, x, N);
-        fillSets();
+        this->fillSets();
     }
 
     NTL::ZZ searchCollisions();
@@ -41,11 +41,29 @@ private:
 
     std::string zToString(const NTL::ZZ &z);
 
-    inline void fillSets();
+    inline void fillSets() {
+        NTL::ZZ temp;
+        distanceS.push_back(NTL::ZZ(numTamed * numWild));
+        jumpSetR.push_back(NTL::PowerMod(alpha, distanceS.at(0), N));
+
+        for (int i = 0; i < k; i++) {
+            temp = distanceS.back() * 2;
+            distanceS.push_back(temp);
+            temp = NTL::PowerMod(alpha, temp, N);
+            jumpSetR.push_back(temp);
+        }
+    }
+
 
     inline void initKangaroo(int ind, NTL::ZZ &x, NTL::ZZ &distance, NTL::ZZ &steps, long &index, bool &wild);
 
-    inline NTL::ZZ setAlpha();
+    inline NTL::ZZ setAlpha() {
+        NTL::ZZ tmp_alpha = NTL::ZZ(2);
+        do {
+            tmp_alpha = NTL::PowerMod(tmp_alpha, 2, N);
+        } while (tmp_alpha == NTL::ZZ(1));
+        return tmp_alpha;
+    }
 };
 
 struct DistinguishedPoint {

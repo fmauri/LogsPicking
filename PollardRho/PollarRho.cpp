@@ -36,8 +36,8 @@ NTL::ZZ PollarRho::searchXParallelPollard() {
     int j;
     NTL::ZZ steps = NTL::SqrRoot(M_PI * N / 2) / 8;
     omp_set_num_threads(8);
-#pragma omp parallel for private(x, a, b, tmp1, tmp2) shared(result, collisions) schedule(dynamic)
-    for (j = 0; j < 1000; j++) {
+#pragma omp parallel for private(x, a, b, tmp1, tmp2, j) shared(result, collisions) schedule(dynamic)
+    for (j = 0; j < 10000; j++) {
         if (result == 0) {
             a = NTL::RandomBnd(N);
             b = NTL::RandomBnd(N);

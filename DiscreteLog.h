@@ -8,7 +8,7 @@
 
 class DiscreteLog {
 protected:
-    long length;
+    long length = 40;
     const NTL::ZZ n = NTL::GenGermainPrime_ZZ(length, 90); //order of g
     const NTL::ZZ N = n * 2 + 1;
     NTL::ZZ alpha;

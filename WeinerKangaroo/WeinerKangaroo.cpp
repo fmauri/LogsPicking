@@ -7,27 +7,6 @@
 #include <sstream>
 #include "WeinerKangaroo.h"
 
-NTL::ZZ WeinerKangaroo::setAlpha() {
-    NTL::ZZ tmp_alpha = NTL::ZZ(2);
-    do {
-        tmp_alpha = NTL::PowerMod(tmp_alpha, 2, N);
-    } while (tmp_alpha == NTL::ZZ(1));
-    return tmp_alpha;
-}
-
-void WeinerKangaroo::fillSets() {
-    NTL::ZZ temp;
-    distanceS.push_back(NTL::ZZ(numTamed * numWild));
-    jumpSetR.push_back(NTL::PowerMod(alpha, distanceS.at(0), N));
-
-    for (int i = 0; i < k; i++) {
-        temp = distanceS.back() * 2;
-        distanceS.push_back(temp);
-        temp = NTL::PowerMod(alpha, temp, N);
-        jumpSetR.push_back(temp);
-    }
-}
-
 NTL::ZZ WeinerKangaroo::searchCollisions() {
     std::map<NTL::ZZ, DistinguishedPoint> points;
     NTL::ZZ tmp_x, distanceWild, distanceTamed, wild, tamed, st, indexTamed, indexWild, tmp, dist;
