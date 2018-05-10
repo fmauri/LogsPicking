@@ -12,7 +12,7 @@ int main() {
     result = pollarRho.searchXParallelPollard();
     std::cout << "x = " << result;
     /*
-     * Kangaroo Pollar Rho
+     * Kangaroo Weiner
      */
     WeinerKangaroo weinerKangaroo;
     weinerKangaroo.printLog();
