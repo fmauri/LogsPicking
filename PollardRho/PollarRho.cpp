@@ -28,7 +28,6 @@ void PollarRho::new_xab(NTL::ZZ &x, NTL::ZZ &a, NTL::ZZ &b, const NTL::ZZ &N, co
 }
 
 NTL::ZZ PollarRho::searchXParallelPollard() {
-    const NTL::ZZ n = (N - 1) / 2;
     std::map<NTL::ZZ, value> collisions;
 
     NTL::ZZ x, a, b;
