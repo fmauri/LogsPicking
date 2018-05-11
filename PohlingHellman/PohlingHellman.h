@@ -50,6 +50,11 @@ public:
 private:
     NTL::ZZ Q;
     Factors factors;
+    std::vector<NTL::ZZ> x_factors;
+
+    NTL::ZZ calcCRT();
+
+    NTL::ZZ mul_inv(NTL::ZZ a, NTL::ZZ b);
 };
 
 #endif //LOGSPICKING_POHLINGHELLMAN_H
