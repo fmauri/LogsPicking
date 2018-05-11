@@ -29,11 +29,12 @@ public:
             factors.clear();
             N = Q;
             exponent = 8 + (rand() % (12 - 8 + 1));
-            N = N * 2 ^ exponent;
+            N = N * NTL::power2_ZZ(exponent);
+//            N = N * pow(2, exponent);
             for (int i = 0; i < 8; i++) {
                 tmpP = NTL::NextPrime(factorsLength, 90);
-                exponent = 8 + (rand() % (12 - 8 + 1));
-                tmpR = tmpP ^ exponent;
+                exponent = 3 + (rand() % (12 - 3 + 1));
+                tmpR = NTL::power(tmpP, exponent);
                 Factor tmpF{tmpP, exponent, tmpR};
                 factors.push_back(tmpF);
                 N = N * (tmpR);
@@ -41,7 +42,7 @@ public:
             N++; // +1 to make it odd and this should be prime
         } while (NTL::ProbPrime(N, 1000));
         alpha = NTL::RandomBnd(N); // up to N-1
-        x = NTL::RandomBnd(N - 1) + 1;
+        x = NTL::RandomBnd(N - 2) + 1;
         beta = NTL::PowerMod(alpha, x, N);
     }
 
