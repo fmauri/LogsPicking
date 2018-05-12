@@ -49,31 +49,28 @@ NTL::ZZ PohlingHellman::searchResult() {
 }
 
 NTL::ZZ PohlingHellman::calcCRT() {
-    NTL::ZZ result = NTL::ZZ(0);
-    NTL::ZZ p, i, prod = NTL::ZZ(1), sum = NTL::ZZ(0);
+    NTL::ZZ result = NTL::ZZ(1); // Initialize result
 
-    for (const auto &factor:factors) {
-        prod *= factor.result;
+    // As per the Chinese remainder theorem,
+    // this loop will always break.
+    while (true) {
+        // Check if remainder of result % num[j] is
+        // rem[j] or not (for all j from 0 to k-1)
+        unsigned long i;
+        for (i = 0; i < x_factors.size(); i++) {
+            if (result % x_factors.at(i) != factors.at(i).result) {
+                break;
+            }
+        }
+        // If all remainders matched, we found result
+        if (i == x_factors.size()) {
+            break;
+//            return result;
+        }
+
+        // Else try next number
+        result++;
     }
 
-    for (unsigned long y = 0; y < factors.size(); y++) {
-        p = prod / factors.at(y).result;
-        sum += x_factors.at(y) * mul_inv(p, factors.at(y).result) * p;
-    }
-
-    return result % prod;
+    return result;
 }
-
-NTL::ZZ PohlingHellman::mul_inv(NTL::ZZ a, NTL::ZZ b) {
-    NTL::ZZ b0 = b, t, q;
-    NTL::ZZ x0 = NTL::ZZ(0), x1 = NTL::ZZ(1);
-    if (b == 1) return NTL::ZZ(1);
-    while (a > 1) {
-        q = a / b;
-        t = b, b = a % b, a = t;
-        t = x0, x0 = x1 - q * x0, x1 = t;
-    }
-    if (x1 < 0) x1 += b0;
-    return x1;
-}
-
