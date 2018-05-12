@@ -20,11 +20,17 @@ public:
         beta = NTL::PowerMod(alpha, x, N);
     }
 
-    PollarRho(NTL::ZZ alpha, NTL::ZZ beta, NTL::ZZ N) {
-        this->alpha = alpha;
-        this->beta = beta;
-        this->N = N;
+    PollarRho(NTL::ZZ alpha, NTL::ZZ beta, NTL::ZZ N, NTL::ZZ n) {
+        this->alpha = std::move(alpha);
+        this->beta = std::move(beta);
+        this->N = std::move(N);
+        this->n = std::move(n);
     }
+
+    NTL::ZZ setNewValues(NTL::ZZ alpha, NTL::ZZ beta) {
+        this->alpha = std::move(alpha);
+        this->beta = std::move(beta);
+    };
 
     NTL::ZZ searchXParallelPollard();
 
