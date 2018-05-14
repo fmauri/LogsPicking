@@ -15,7 +15,7 @@ static long factorsLength = 40;
 struct Factor {
     NTL::ZZ prime;
     long exponent;
-    NTL::ZZ result; //TODO more worth calculate every time or o salve it???????
+    NTL::ZZ result;
 };
 
 class PohlingHellman : public DiscreteLog {
@@ -29,8 +29,11 @@ public:
             factors.clear();
             N = Q;
             exponent = 8 + (rand() % (12 - 8 + 1));
-            N = N * NTL::power2_ZZ(exponent);
-//            N = N * pow(2, exponent);
+            tmpP = 2;
+            tmpR = NTL::power2_ZZ(exponent);
+            Factor tmpF{tmpP, exponent, tmpR};
+            factors.push_back(tmpF);
+            N = N * tmpR;
             for (int i = 0; i < 8; i++) {
                 tmpP = NTL::NextPrime(factorsLength, 90);
                 exponent = 3 + (rand() % (12 - 3 + 1));
@@ -55,7 +58,6 @@ private:
 
     NTL::ZZ calcCRT();
 
-    NTL::ZZ mul_inv(NTL::ZZ a, NTL::ZZ b);
 };
 
 #endif //LOGSPICKING_POHLINGHELLMAN_H

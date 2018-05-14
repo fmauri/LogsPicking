@@ -44,7 +44,9 @@ NTL::ZZ PohlingHellman::searchResult() {
         }
         x_factors.push_back(x);
     }
+    std::cout << "I have finished to calculate x for each factor\n";
     result = calcCRT();
+    result = result % ((N - 1) / Q);
     return result;
 }
 
