@@ -26,7 +26,8 @@ int main() {
      */
     std::cout << "\nPohling Hellman\n";
     PohlingHellman pohlingHellman;
-    pohlingHellman.printLog();
+//    pohlingHellman.printLog();
+//    pohlingHellman.printFactors();
     result = pohlingHellman.searchResult();
     std::cout << "x = " << result << std::endl;
     return 0;

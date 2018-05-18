@@ -7,20 +7,28 @@
 #include "../Support/pollard_rho_dlp.hpp"
 
 NTL::ZZ PohlingHellman::searchResult() {
-    NTL::ZZ g, h, x, tmpExp, pr;
+    NTL::ZZ g, h, x, tmpExp;
     NTL::ZZ result = NTL::ZZ(0);
     NTL::ZZ q = N - 1;
 
+    /*
+     * Search for 2
+     */
+    Factor f2 = factors.at(0);
+    NTL::ZZ g2 = NTL::PowerMod(alpha, q / f2.result, N);
+    NTL::ZZ y2 = NTL::PowerMod(beta, q / f2.result, N);
+    NTL::ZZ x2 = bruteForce(g2, y2, f2.result);
+    std::cout << "Found solution for factor 2: " << x2 << std::endl;
+
     std::vector<NTL::ZZ> allXi;
     std::vector<Congruence> congruences;
-
     NTL::ZZ tmpG, tmpH;
+
     for (auto &factor : factors) {
-        pr = factor.prime;
-        h = NTL::PowerMod(beta, q / factor.result, N);
-        g = NTL::PowerMod(alpha, q / factor.result, N);
+        tmpExp = NTL::PowerMod(factor.prime, factor.exponent, N);
+        g = NTL::PowerMod(alpha, q / tmpExp, N);
+        h = NTL::PowerMod(beta, q / tmpExp, N);
         std::cout << h << " <- h g-> " << g << std::endl;
-        NTL::ZZ tmp = NTL::ZZ(1);
         NTL::ZZ tmpX = NTL::ZZ(0);
         x = 0;
         tmpG = NTL::PowerMod(g, NTL::power(factor.prime, factor.exponent - 1), N);
@@ -34,11 +42,11 @@ NTL::ZZ PohlingHellman::searchResult() {
 //            PollardRho pollardRho(tmpG, tmpH, N, pr);
 //            tmpX = pollardRho.searchXParallelPollard();
 
-            tmpX = PollardRhoDLP(N, pr, tmpG, tmpH);
+            tmpX = PollardRhoDLP(N, factor.prime, tmpG, tmpH);
 
             std::cout << tmpX << " tmpx \n";
 //            x += tmpX * NTL::PowerMod(pr, e, N);
-            x += tmpX * NTL::power(pr, e - 1);
+            x += tmpX * NTL::power(factor.prime, e - 1);
             allXi.push_back(x);
         }
         congruences.push_back({x, factor.result});
@@ -73,14 +81,17 @@ NTL::ZZ PohlingHellman::SolveCongruences(std::vector<Congruence> congruences) {
 NTL::ZZ PohlingHellman::bruteForce(NTL::ZZ base, NTL::ZZ goal, NTL::ZZ up) {
     std::cout << "Parameter " << base << "\n " << goal << "\n " << up << std::endl;
     NTL::ZZ tmpExp;
-    for (tmpExp = NTL::ZZ(0); tmpExp <= up; tmpExp++) {
+    for (tmpExp = NTL::ZZ(0); tmpExp <= up * THETA; tmpExp++) {
         if (NTL::PowerMod(base, tmpExp, N) == goal) {
             return tmpExp;
-        } else if (NTL::PowerMod(base, tmpExp, N) > goal) {
-            std::cout << tmpExp << std::endl;
-            throw std::invalid_argument("ERR/something horrible happened");
         }
     }
     std::cout << tmpExp << " " << goal - base << std::endl;
     throw std::invalid_argument("ERR/Brute force failed");
+}
+
+void PohlingHellman::printFactors() {
+    for (auto const &factor:factors) {
+        std::cout << factor.prime << "^" << factor.exponent << "=" << factor.result << std::endl;
+    }
 }

@@ -14,6 +14,7 @@ protected:
     NTL::ZZ alpha;
     NTL::ZZ x;
     NTL::ZZ beta;
+    const long THETA = 65536; // 2^16
 public:
     inline void printLog();
 
