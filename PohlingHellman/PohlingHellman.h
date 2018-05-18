@@ -51,6 +51,8 @@ public:
 
     NTL::ZZ searchResult();
 
+    NTL::ZZ bruteForce(NTL::ZZ num, NTL::ZZ goal);
+
 private:
     NTL::ZZ Q;
     Factors factors;

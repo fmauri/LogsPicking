@@ -27,7 +27,7 @@ public:
         this->n = std::move(n);
     }
 
-    NTL::ZZ setNewValues(NTL::ZZ &alpha, NTL::ZZ &beta, NTL::ZZ ord) {
+    NTL::ZZ setNewValues(NTL::ZZ &alpha, NTL::ZZ &beta, NTL::ZZ &ord) {
         this->alpha = alpha;
         this->beta = beta;
         this->n = ord;
