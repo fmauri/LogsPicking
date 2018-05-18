@@ -21,8 +21,9 @@ NTL::ZZ PohlingHellman::searchResult() {
         h = NTL::PowerMod(h, NTL::PowerMod(factor.prime, factor.exponent - 1, N), N);
         PollarRho pollarRho(g, h, N, N - 1);
         std::cout << std::endl;
-        std::cout << g << "^x=" << h << "mod" << N;
+        std::cout << g << "^x=" << h << " mod" << N;
         x = pollarRho.searchXParallelPollard();
+        std::cout << g << "^" << x << "=" << h << " mod" << N;
         allXi.push_back(x);
 #pragma omp parallel for schedule(dynamic)
         for (long i = factor.exponent - 2; i >= 0; i++) {
@@ -35,6 +36,7 @@ NTL::ZZ PohlingHellman::searchResult() {
             h = NTL::PowerMod(NTL::MulMod(h, NTL::PowerMod(h, -tmpExp, N), N), i, N);
             pollarRho.setNewValues(g, h, factor.result);
             x = pollarRho.searchXParallelPollard();
+            std::cout << g << "^" << x << "=" << h << " mod" << N;
             allXi.push_back(x);
         }
         x = 0;
@@ -42,14 +44,13 @@ NTL::ZZ PohlingHellman::searchResult() {
             x += item;
         }
         x_factors.push_back(x);
-        std::cout << "Factor done\n";
+        std::cout << g << "^" << x << "=" << h << " mod" << N;
     }
     std::cout << "I have finished to calculate x for each factor\n";
     for (unsigned long i = 0; i < x_factors.size() - 1; i++) {
         result = result +
                  NTL::CRT(x_factors.at(i), x_factors.at(i + 1), factors.at(i).result, factors.at(i + 1).result);
     }
-//    result = calcCRT();
     result = result % ((N - 1) / Q);
     return result;
 }
