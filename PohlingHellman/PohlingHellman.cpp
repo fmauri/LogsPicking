@@ -5,30 +5,29 @@
 #include "PohlingHellman.h"
 #include "../PollardRho/PollarRho.h"
 
-/*
- * TODO the g has to have change (check note) , before going to next iteration
- * TODO for each factor => inner loop for i = 0 => exponent ;
- */
 NTL::ZZ PohlingHellman::searchResult() {
     NTL::ZZ result = NTL::ZZ(0);
-    NTL::ZZ g, h, x, divisor;
+    NTL::ZZ g, h, x, divisor, tmpExp;
     std::vector<NTL::ZZ> allXi;
     long y = 0;
     for (const auto &factor:factors) {
-        g = NTL::PowerMod(alpha, (N / factor.result), N);
-        h = NTL::PowerMod(beta, (N / factor.result), N);
+        tmpExp = (N - 1) / factor.result;
+        g = NTL::PowerMod(alpha, tmpExp, N);
+        h = NTL::PowerMod(beta, tmpExp, N);
         /*
         * Search for x
         */
         g = NTL::PowerMod(g, NTL::power(factor.prime, factor.exponent - 1), N);
         h = NTL::PowerMod(h, NTL::power(factor.prime, factor.exponent - 1), N);
-        PollarRho pollarRho(g, h, N, factor.result);
-        x = pollarRho.searchXParallelPollard(); //TODO it takes to long to finish
+        PollarRho pollarRho(g, h, N, n - 1);
+        std::cout << std::endl;
+        std::cout << g << "^x=" << h << "mod" << N;
+        x = pollarRho.searchXParallelPollard();
         allXi.push_back(x);
+#pragma omp parallel for schedule(dynamic)
         for (long i = factor.exponent - 2; i > 0; i++) {
             divisor = 0;
             y = 0;
-            std::cout << allXi.size() << " " << allXi.at(0) << std::endl;
             for (auto const &exponent : allXi) {
                 divisor = divisor + NTL::MulMod(exponent, NTL::power(factor.prime, y), N);
                 y++;
