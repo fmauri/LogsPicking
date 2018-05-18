@@ -1,4 +1,5 @@
 #include <iostream>
+#include <omp.h>
 #include "PollardRho/PollardRho.h"
 #include "WeinerKangaroo/WeinerKangaroo.h"
 #include "PohlingHellman/PohlingHellman.h"
@@ -13,6 +14,11 @@ int main() {
 //    pollarRho.printLog();
 //    result = pollarRho.searchXParallelPollard();
 //    std::cout << "x = " << result << std::endl;
+//    if (pollarRho.isBeta(result)) {
+//        std::cout << "Correct\n";
+//    } else {
+//        std::cout << "Wrong\n";
+//    }
 //    /*
 //     * Kangaroo Weiner
 //     */
@@ -21,14 +27,22 @@ int main() {
 //    weinerKangaroo.printLog();
 //    result = weinerKangaroo.searchCollisions();
 //    std::cout << "x = " << result << std::endl;
+//    if (weinerKangaroo.isBeta(result)) {
+//        std::cout << "Correct\n";
+//    } else {
+//        std::cout << "Wrong\n";
+//    }
     /*
      * PohlingHellman
      */
-    std::cout << "\nPohling Hellman\n";
     PohlingHellman pohlingHellman;
-//    pohlingHellman.printLog();
-//    pohlingHellman.printFactors();
-    result = pohlingHellman.searchResult();
-    std::cout << "x = " << result << std::endl;
+    omp_set_num_threads(8);
+    std::cout << "Computing challenge" << std::endl;
+    pohlingHellman.GenerateChallenge();
+    std::cout << "Done\n" << "Goal is:\n" << pohlingHellman.getGoal() << "\n";
+    std::cout << "Computing Pohling-Hellman" << std::endl;
+    result = pohlingHellman.calculateReduction();
+    std::cout << "Calculated\n" << result << std::endl;
+
     return 0;
 }

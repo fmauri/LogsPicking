@@ -9,7 +9,7 @@
 class DiscreteLog {
 protected:
     long length = 40;
-    NTL::ZZ n = NTL::GenGermainPrime_ZZ(length, 90); //order of g
+    NTL::ZZ n = NTL::GenGermainPrime_ZZ(length, 90); //order of alpha
     NTL::ZZ N = n * 2 + 1;
     NTL::ZZ alpha;
     NTL::ZZ x;
@@ -18,10 +18,11 @@ protected:
 public:
     inline void printLog();
 
+    bool isBeta(const NTL::ZZ x) { return (x == beta); }
 };
 
 void DiscreteLog::printLog() {
-    std::cout << alpha << "^" << x << " = " << beta << "mod(" << N << ")\n";
+    std::cout << alpha << "^" << x << " = " << beta << " mod(" << N << ")\n";
 }
 
 #endif //LOGSPICKING_DISCRETELOG_H

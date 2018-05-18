@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(LogsPicking)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+#set(CMAKE_CXX_STANDARD 14)
 find_package(OpenMP)
 if (OPENMP_FOUND)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -12,7 +12,8 @@ endif ()
 
 add_executable(LogsPicking main.cpp PollardRho/PollardRho.cpp PollardRho/PollardRho.h DiscreteLog.h
         WeinerKangaroo/WeinerKangaroo.cpp WeinerKangaroo/WeinerKangaroo.h
+        PohlingHellman/pollard_rho_dlp.cpp PohlingHellman/pollard_rho_dlp.hpp
         PohlingHellman/PohlingHellman.cpp PohlingHellman/PohlingHellman.h
-        Support/pollard_rho_dlp.cpp Support/pollard_rho_dlp.hpp Support/utilities.cpp Support/utilities.hpp)
+        Support/utilities.hpp Support/utilities.cpp)
 
 target_link_libraries(LogsPicking ntl m gmp)
