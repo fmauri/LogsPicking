@@ -8,13 +8,19 @@
 
 #include <vector>
 #include "../DiscreteLog.h"
-#include "../PollardRho/PollarRho.h"
+//#include "../PollardRho/PollarRho.h"
+#include "../pollard.hpp"
 
-static long factorsLength = 40;
+static long factorsLength = 35;
 
 struct Factor {
     NTL::ZZ prime;
     long exponent;
+    NTL::ZZ result;
+};
+
+struct Congruence {
+    NTL::ZZ x;
     NTL::ZZ result;
 };
 
@@ -25,33 +31,47 @@ public:
         long exponent;
         NTL::ZZ tmpR;
         do {
-            Q = NTL::GenPrime_ZZ(256, 90);
             factors.clear();
+//            Q = NTL::GenPrime_ZZ(NTL::RandomBnd(32) + 256) * NTL::GenPrime_ZZ(NTL::RandomBnd(32) + 256);
+            Q = NTL::GenPrime_ZZ(256, 90);
             N = Q;
-            exponent = 8 + (rand() % (12 - 8 + 1));
+            exponent = 3;
             tmpP = 2;
             tmpR = NTL::power2_ZZ(exponent);
-            Factor tmpF{tmpP, exponent, tmpR};
-            factors.push_back(tmpF);
+            Factor tmpF1{tmpP, exponent, tmpR};
+            factors.push_back(tmpF1);
             N = N * tmpR;
             for (int i = 0; i < 8; i++) {
                 tmpP = NTL::GenPrime_ZZ(factorsLength, 90);
-                exponent = 3 + (rand() % (12 - 3 + 1));
+                exponent = NTL::RandomBnd(10) + 3;
                 tmpR = NTL::power(tmpP, exponent);
                 Factor tmpF{tmpP, exponent, tmpR};
                 factors.push_back(tmpF);
                 N = N * (tmpR);
             }
             N = N + 1; // +1 to make it odd and this should be prime
-        } while (NTL::ProbPrime(N, 1000));
-        alpha = NTL::RandomBnd(N); // up to N-1
+        } while (NTL::ProbPrime(N, 10000));
+//        N = 8101;
+//        alpha = 6;
+//        x = 6689;
+//        beta = 7531;
+        alpha = NTL::RandomBnd(N - 2) + 2;
         x = NTL::RandomBnd(N - 2) + 1;
         beta = NTL::PowerMod(alpha, x, N);
+//        factors.clear();
+//        Factor factor{NTL::ZZ(2), 2, NTL::power(NTL::ZZ(2), 2)};
+//        Factor factor1{NTL::ZZ(3), 4, NTL::power(NTL::ZZ(3), 4)};
+//        Factor factor2{NTL::ZZ(5), 2, NTL::power(NTL::ZZ(5), 2)};
+//        factors.push_back(factor);
+//        factors.push_back(factor1);
+//        factors.push_back(factor2);
     }
 
     NTL::ZZ searchResult();
 
-    NTL::ZZ bruteForce(NTL::ZZ num, NTL::ZZ goal);
+    NTL::ZZ bruteForce(NTL::ZZ base, NTL::ZZ goal, NTL::ZZ up);
+
+    NTL::ZZ SolveCongruences(std::vector<Congruence> congruences);
 
 private:
     NTL::ZZ Q;

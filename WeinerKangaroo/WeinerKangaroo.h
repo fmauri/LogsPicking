@@ -66,7 +66,7 @@ private:
     }
 };
 
-struct DistinguishedPoint {
+struct KangarooDistinguishedPoint {
     NTL::ZZ distance;
     bool isWild;
     long id;

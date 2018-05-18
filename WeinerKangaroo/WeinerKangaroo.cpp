@@ -8,10 +8,10 @@
 #include "WeinerKangaroo.h"
 
 NTL::ZZ WeinerKangaroo::searchCollisions() {
-    std::map<NTL::ZZ, DistinguishedPoint> points;
+    std::map<NTL::ZZ, KangarooDistinguishedPoint> points;
     NTL::ZZ tmp_x, distanceWild, distanceTamed, wild, tamed, st, indexTamed, indexWild, tmp, dist;
     NTL::ZZ kangarooDistance, kangarooX, kangarooSteps, result;
-    DistinguishedPoint tmp_result;
+    KangarooDistinguishedPoint tmp_result;
 
     result = NTL::ZZ(0);
     distanceTamed = 0;

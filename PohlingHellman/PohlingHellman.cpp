@@ -6,53 +6,77 @@
 #include "../PollardRho/PollarRho.h"
 
 NTL::ZZ PohlingHellman::searchResult() {
+    NTL::ZZ g, h, x, tmpExp, pr;
     NTL::ZZ result = NTL::ZZ(0);
-    NTL::ZZ g, h, x, tmpExp;
+    NTL::ZZ q = N - 1;
+
     std::vector<NTL::ZZ> allXi;
-    h = beta;
-    PollarRho pollarRho(alpha, beta, N, n);
-    NTL::ZZ q = NTL::ZZ(N - 1);
-    for (const auto &factor:factors) {
-        for (long e = 1; e < factor.exponent; e++) {
-            tmpExp = (N - 1) / NTL::PowerMod(factor.prime, factor.exponent, N);
-            h = NTL::PowerMod(h, tmpExp, N);
-            g = NTL::PowerMod(alpha, tmpExp, N);
-//            x = bruteForce(g, h); //TODO maybe needed to be calculated differently
-            pollarRho.setNewValues(g, h, q);
-            x = pollarRho.searchXParallelPollard();
+    std::vector<Congruence> congruences;
+
+    NTL::ZZ tmpG, tmpH;
+    for (auto &factor : factors) {
+        pr = factor.prime;
+//        tmpExp = q / NTL::PowerMod(pr, factors.at(i).exponent, N);
+        h = NTL::PowerMod(beta, q / factor.result, N);
+        g = NTL::PowerMod(alpha, q / factor.result, N);
+        std::cout << h << " <- h g-> " << g << std::endl;
+        NTL::ZZ tmp = NTL::ZZ(1);
+        NTL::ZZ tmpX = NTL::ZZ(0);
+        x = 0;
+        tmpG = NTL::PowerMod(g, NTL::power(factor.prime, factor.exponent - 1), N);
+        for (long e = 1; e <= factor.exponent; e++) {
+            tmpH = NTL::PowerMod(NTL::MulMod(NTL::PowerMod(NTL::InvMod(g, N), x, N), h, N),
+                                 NTL::power(factor.prime, factor.exponent - e), N);
+            std::cout << tmpG << "<- tmpG tmpH-> " << tmpH << std::endl;
+//            PollarRho pollarRho(tmpG, tmpH, N, pr);
+//            Pollard pollard(N, pr, tmpG, tmpH);
+            tmpX = PollardRhoDLP(N, pr, tmpG, tmpH);
+//            tmpX = pollard.findX();
+            std::cout << tmpX << " tmpx \n";
+//            x += tmpX * NTL::PowerMod(pr, e, N);
+            x += tmpX * NTL::power(pr, e - 1);
             allXi.push_back(x);
-            h = NTL::MulMod(beta, NTL::InvMod(NTL::PowerMod(factor.prime, x, N), N), N);
         }
+        congruences.push_back({x, factor.result});
         tmpExp = 0;
-        for (auto const &item:allXi) {
-            x += item * NTL::PowerMod(alpha, tmpExp, N);
-            tmpExp++;
-        }
         x_factors.push_back(x);
-        std::cout << g << "^" << x << "=" << h << " mod" << N;
+        std::cout << g << "^" << x << "=" << h << " mod" << N << std::endl;
     }
     std::cout << "I have finished to calculate x for each factor\n";
-//    for (unsigned long i = 0; i < x_factors.size() - 1; i++) {
-//        result = result +
-//                 NTL::CRT(x_factors.at(i), x_factors.at(i + 1), factors.at(i).result, factors.at(i + 1).result);
-//    }
-    NTL::ZZ M, y;
-    for (unsigned long i = 0; i < x_factors.size() - 1; i++) {
-        M = (N - 1) / x_factors.at(i);
-        y = NTL::InvMod(M, NTL::ZZ(4));
-        result = result + M * y;
-    }
-    result = result % (N - 1);
-    result = result % ((N - 1) / Q);
-    return result;
+
+    return SolveCongruences(congruences);
 }
 
-NTL::ZZ PohlingHellman::bruteForce(NTL::ZZ num, NTL::ZZ goal) {
-    NTL::ZZ tmpExp, tmpResult;
-    tmpExp = 1;
-    do {
-        tmpResult = NTL::PowerMod(num, tmpExp, N);
-        ++tmpExp;
-    } while (tmpResult != goal);
-    return tmpExp;
+NTL::ZZ PohlingHellman::SolveCongruences(std::vector<Congruence> congruences) {
+    NTL::ZZ sum = NTL::ZZ(0);
+    NTL::ZZ product = NTL::ZZ(1);
+    NTL::ZZ gcd, z, k;
+    for (auto &congruence : congruences) {
+        product *= congruence.result;
+    }
+
+    for (auto &congruence : congruences) {
+        NTL::ZZ p = product / congruence.result;
+        NTL::XGCD(gcd, z, k, p, congruence.result);
+//        sum += congruence.x * NTL::InvMod(p % congruence.result, congruence.result) * N;
+        sum += z * p * congruence.x;
+    }
+
+    return sum % product;
+}
+
+
+NTL::ZZ PohlingHellman::bruteForce(NTL::ZZ base, NTL::ZZ goal, NTL::ZZ up) {
+    std::cout << "Parameter " << base << "\n " << goal << "\n " << up << std::endl;
+    NTL::ZZ tmpExp;
+    for (tmpExp = NTL::ZZ(0); tmpExp <= up; tmpExp++) {
+        if (NTL::PowerMod(base, tmpExp, N) == goal) {
+            return tmpExp;
+        } else if (NTL::PowerMod(base, tmpExp, N) > goal) {
+            std::cout << tmpExp << std::endl;
+            throw std::invalid_argument("ERR/something horrible happened");
+        }
+    }
+    std::cout << tmpExp << " " << goal - base << std::endl;
+    throw std::invalid_argument("ERR/Brute force failed");
 }

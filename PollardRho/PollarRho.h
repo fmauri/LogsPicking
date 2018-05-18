@@ -21,13 +21,13 @@ public:
     }
 
     PollarRho(NTL::ZZ alpha, NTL::ZZ beta, NTL::ZZ N, NTL::ZZ n) {
-        this->alpha = std::move(alpha);
-        this->beta = std::move(beta);
-        this->N = std::move(N);
-        this->n = std::move(n);
+        this->alpha = alpha;
+        this->beta = beta;
+        this->N = N;
+        this->n = n;
     }
 
-    NTL::ZZ setNewValues(NTL::ZZ &alpha, NTL::ZZ &beta, NTL::ZZ &ord) {
+    NTL::ZZ setNewValues(NTL::ZZ alpha, NTL::ZZ beta, NTL::ZZ ord) {
         this->alpha = alpha;
         this->beta = beta;
         this->n = ord;

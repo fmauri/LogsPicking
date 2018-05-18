@@ -36,6 +36,16 @@ NTL::ZZ PollarRho::searchXParallelPollard() {
     int j;
     NTL::ZZ steps = NTL::SqrRoot(M_PI * N / 2) / 8;
     omp_set_num_threads(8);
+    if (alpha == 2) {
+        if (beta == alpha) {
+            return NTL::ZZ(1);
+        }/* else {
+            return NTL::ZZ(0);
+        }*/
+    }
+    if (alpha == beta) {
+        return NTL::ZZ(1);
+    }
 #pragma omp parallel for private(x, a, b, tmp1, tmp2, j) shared(result, collisions) schedule(dynamic)
     for (j = 0; j < 1000000; j++) {
         if (result == 0) {
