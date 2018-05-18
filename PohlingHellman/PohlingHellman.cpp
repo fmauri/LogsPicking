@@ -7,7 +7,7 @@
 
 NTL::ZZ PohlingHellman::searchResult() {
     NTL::ZZ result = NTL::ZZ(0);
-    NTL::ZZ g, h, x, divisor, tmpExp;
+    NTL::ZZ g, h, x, tmpExp;
     std::vector<NTL::ZZ> allXi;
     long y = 0;
     for (const auto &factor:factors) {
@@ -19,21 +19,20 @@ NTL::ZZ PohlingHellman::searchResult() {
         */
         g = NTL::PowerMod(g, NTL::power(factor.prime, factor.exponent - 1), N);
         h = NTL::PowerMod(h, NTL::power(factor.prime, factor.exponent - 1), N);
-        PollarRho pollarRho(g, h, N, n - 1);
+        PollarRho pollarRho(g, h, N, N - 1);
         std::cout << std::endl;
         std::cout << g << "^x=" << h << "mod" << N;
         x = pollarRho.searchXParallelPollard();
         allXi.push_back(x);
 #pragma omp parallel for schedule(dynamic)
         for (long i = factor.exponent - 2; i > 0; i++) {
-            divisor = 0;
+            tmpExp = 0;
             y = 0;
             for (auto const &exponent : allXi) {
-                divisor = divisor + NTL::MulMod(exponent, NTL::power(factor.prime, y), N);
+                tmpExp = tmpExp + NTL::MulMod(exponent, NTL::power(factor.prime, y), N);
                 y++;
             }
-            g = g / divisor;
-            h = h / divisor;
+            h = NTL::MulMod(h, NTL::PowerMod(h, -tmpExp, N), N);
             pollarRho.setNewValues(g, h, factor.result);
             x = pollarRho.searchXParallelPollard();
             allXi.push_back(x);
