@@ -18,11 +18,11 @@ NTL::ZZ PohlingHellman::searchResult() {
         g = alpha ^ (N / factor.result);
         h = beta ^ (N / factor.result);
         /*
-     * Search for x
-     */
+        * Search for x
+        */
         g = NTL::PowerMod(g, NTL::power(factor.prime, factor.exponent - 1), N);
         h = NTL::PowerMod(h, NTL::power(factor.prime, factor.exponent - 1), N);
-        PollarRho pollarRho(g, h, N, factor.prime);
+        PollarRho pollarRho(g, h, N, factor.result);
         x = pollarRho.searchXParallelPollard(); //TODO it takes to long to finish
         allXi.push_back(x);
         for (long i = factor.exponent - 2; i > 0; i++) {
@@ -35,7 +35,7 @@ NTL::ZZ PohlingHellman::searchResult() {
             }
             g = g / divisor;
             h = h / divisor;
-            pollarRho.setNewValues(g, h);
+            pollarRho.setNewValues(g, h, factor.result);
             x = pollarRho.searchXParallelPollard();
             allXi.push_back(x);
         }
