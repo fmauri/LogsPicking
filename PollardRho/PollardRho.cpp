@@ -4,30 +4,31 @@
 
 #include <omp.h>
 #include <map>
-#include "PollarRho.h"
+#include "PollardRho.h"
 
-void PollarRho::new_xab(NTL::ZZ &x, NTL::ZZ &a, NTL::ZZ &b, const NTL::ZZ &N, const NTL::ZZ &n, const NTL::ZZ &alpha,
-                        const NTL::ZZ &beta) {
+void PollardRho::new_xab(NTL::ZZ &x, NTL::ZZ &a, NTL::ZZ &b, const NTL::ZZ &N, const NTL::ZZ &n, const NTL::ZZ &alpha,
+                         const NTL::ZZ &beta) {
     switch (x % 3) {
         case 0:
-            x = PowerMod(x, 2, N);
-            a = MulMod(a, 2, n);
-            b = MulMod(b, 2, n);
+//            x = NTL::PowerMod(x, 2, N);
+            x = NTL::MulMod(x, x, N);
+            a = NTL::MulMod(a, 2, n);
+            b = NTL::MulMod(b, 2, n);
             break;
         case 1:
-            x = MulMod(x, alpha, N);
-            a = AddMod(a, 1, n);
+            x = NTL::MulMod(x, alpha, N);
+            a = NTL::AddMod(a, 1, n);
             break;
         case 2:
-            x = MulMod(x, beta, N);
-            b = AddMod(b, 1, n);
+            x = NTL::MulMod(x, beta, N);
+            b = NTL::AddMod(b, 1, n);
             break;
         default:
             break;
     }
 }
 
-NTL::ZZ PollarRho::searchXParallelPollard() {
+NTL::ZZ PollardRho::searchXParallelPollard() {
     std::map<NTL::ZZ, value> collisions;
 
     NTL::ZZ x, a, b;
@@ -46,9 +47,10 @@ NTL::ZZ PollarRho::searchXParallelPollard() {
     if (alpha == beta) {
         return NTL::ZZ(1);
     }
+    omp_set_num_threads(8);
 #pragma omp parallel for private(x, a, b, tmp1, tmp2, j) shared(result, collisions) schedule(dynamic)
-    for (j = 0; j < 1000000; j++) {
-        if (result == 0) {
+    for (j = 0; j < omp_get_thread_num(); j++) {
+        while (result == 0) {
             a = NTL::RandomBnd(N);
             b = NTL::RandomBnd(N);
             x = NTL::MulMod(NTL::PowerMod(alpha, a, N), NTL::PowerMod(beta, b, N), N);

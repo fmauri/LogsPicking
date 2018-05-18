@@ -3,7 +3,7 @@
 //
 
 #include "PohlingHellman.h"
-#include "../PollardRho/PollarRho.h"
+#include "../PollardRho/PollardRho.h"
 
 NTL::ZZ PohlingHellman::searchResult() {
     NTL::ZZ g, h, x, tmpExp, pr;
@@ -16,7 +16,6 @@ NTL::ZZ PohlingHellman::searchResult() {
     NTL::ZZ tmpG, tmpH;
     for (auto &factor : factors) {
         pr = factor.prime;
-//        tmpExp = q / NTL::PowerMod(pr, factors.at(i).exponent, N);
         h = NTL::PowerMod(beta, q / factor.result, N);
         g = NTL::PowerMod(alpha, q / factor.result, N);
         std::cout << h << " <- h g-> " << g << std::endl;
@@ -25,13 +24,15 @@ NTL::ZZ PohlingHellman::searchResult() {
         x = 0;
         tmpG = NTL::PowerMod(g, NTL::power(factor.prime, factor.exponent - 1), N);
         for (long e = 1; e <= factor.exponent; e++) {
-            tmpH = NTL::PowerMod(NTL::MulMod(NTL::PowerMod(NTL::InvMod(g, N), x, N), h, N),
+//            tmpH = NTL::PowerMod(NTL::MulMod(NTL::PowerMod(NTL::InvMod(g, N), x, N), h, N),
+//                                 NTL::power(factor.prime, factor.exponent - e), N);
+            tmpH = NTL::PowerMod(NTL::MulMod(NTL::InvMod(NTL::PowerMod(g, x, N), N), h, N),
                                  NTL::power(factor.prime, factor.exponent - e), N);
             std::cout << tmpG << "<- tmpG tmpH-> " << tmpH << std::endl;
-//            PollarRho pollarRho(tmpG, tmpH, N, pr);
+            PollardRho pollardRho(tmpG, tmpH, N, pr);
 //            Pollard pollard(N, pr, tmpG, tmpH);
-            tmpX = PollardRhoDLP(N, pr, tmpG, tmpH);
-//            tmpX = pollard.findX();
+//            tmpX = PollardRhoDLP(N, pr, tmpG, tmpH);
+            tmpX = pollardRho.searchXParallelPollard();
             std::cout << tmpX << " tmpx \n";
 //            x += tmpX * NTL::PowerMod(pr, e, N);
             x += tmpX * NTL::power(pr, e - 1);

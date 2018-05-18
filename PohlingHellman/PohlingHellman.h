@@ -8,7 +8,7 @@
 
 #include <vector>
 #include "../DiscreteLog.h"
-//#include "../PollardRho/PollarRho.h"
+//#include "../PollardRho/PollardRho.h"
 #include "../pollard.hpp"
 
 static long factorsLength = 35;

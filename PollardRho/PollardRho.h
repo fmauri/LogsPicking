@@ -1,26 +1,27 @@
 //
 // Created by mauri on 10.05.18.
 //
-#include <NTL/ZZ.h>
-#include "../DiscreteLog.h"
 
 #ifndef LOGSPICKING_POLLARRHO_H
 #define LOGSPICKING_POLLARRHO_H
+
+#include <NTL/ZZ.h>
+#include "../DiscreteLog.h"
 
 struct value {
     NTL::ZZ a, b;
 };
 
-class PollarRho : public DiscreteLog {
+class PollardRho : public DiscreteLog {
 public:
-    PollarRho() {
+    PollardRho() {
         length = 45;
         alpha = NTL::ZZ(2);
         x = NTL::RandomLen_ZZ(15);
         beta = NTL::PowerMod(alpha, x, N);
     }
 
-    PollarRho(NTL::ZZ alpha, NTL::ZZ beta, NTL::ZZ N, NTL::ZZ n) {
+    PollardRho(NTL::ZZ alpha, NTL::ZZ beta, NTL::ZZ N, NTL::ZZ n) {
         this->alpha = alpha;
         this->beta = beta;
         this->N = N;

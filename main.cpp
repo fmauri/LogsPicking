@@ -1,15 +1,15 @@
 #include <iostream>
-#include "PollardRho/PollarRho.h"
+#include "PollardRho/PollardRho.h"
 #include "WeinerKangaroo/WeinerKangaroo.h"
 #include "PohlingHellman/PohlingHellman.h"
 
 int main() {
     NTL::ZZ result;
     /*
-     * PollarRho
+     * PollardRho
      */
 //    std::cout << "Pollard Rho\n";
-//    PollarRho pollarRho;
+//    PollardRho pollarRho;
 //    pollarRho.printLog();
 //    result = pollarRho.searchXParallelPollard();
 //    std::cout << "x = " << result << std::endl;
