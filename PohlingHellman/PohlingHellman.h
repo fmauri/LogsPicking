@@ -25,7 +25,7 @@ public:
         long exponent;
         NTL::ZZ tmpR;
         do {
-            Q = NTL::NextPrime(256, 90);
+            Q = NTL::GenPrime_ZZ(256, 90);
             factors.clear();
             N = Q;
             exponent = 8 + (rand() % (12 - 8 + 1));
@@ -35,14 +35,14 @@ public:
             factors.push_back(tmpF);
             N = N * tmpR;
             for (int i = 0; i < 8; i++) {
-                tmpP = NTL::NextPrime(factorsLength, 90);
+                tmpP = NTL::GenPrime_ZZ(factorsLength, 90);
                 exponent = 3 + (rand() % (12 - 3 + 1));
                 tmpR = NTL::power(tmpP, exponent);
                 Factor tmpF{tmpP, exponent, tmpR};
                 factors.push_back(tmpF);
                 N = N * (tmpR);
             }
-            N++; // +1 to make it odd and this should be prime
+            N = N + 1; // +1 to make it odd and this should be prime
         } while (NTL::ProbPrime(N, 1000));
         alpha = NTL::RandomBnd(N); // up to N-1
         x = NTL::RandomBnd(N - 2) + 1;
@@ -55,9 +55,6 @@ private:
     NTL::ZZ Q;
     Factors factors;
     std::vector<NTL::ZZ> x_factors;
-
-    NTL::ZZ calcCRT();
-
 };
 
 #endif //LOGSPICKING_POHLINGHELLMAN_H

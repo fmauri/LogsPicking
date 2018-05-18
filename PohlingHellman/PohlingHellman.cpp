@@ -18,18 +18,19 @@ NTL::ZZ PohlingHellman::searchResult() {
         g = alpha ^ (N / factor.result);
         h = beta ^ (N / factor.result);
         /*
-         * Search for x
-         */
+     * Search for x
+     */
         g = NTL::PowerMod(g, NTL::power(factor.prime, factor.exponent - 1), N);
         h = NTL::PowerMod(h, NTL::power(factor.prime, factor.exponent - 1), N);
         PollarRho pollarRho(g, h, N, factor.prime);
-        x = pollarRho.searchXParallelPollard();
+        x = pollarRho.searchXParallelPollard(); //TODO it takes to long to finish
         allXi.push_back(x);
         for (long i = factor.exponent - 2; i > 0; i++) {
             divisor = 0;
             y = 0;
+            std::cout << allXi.size() << " " << allXi.at(0) << std::endl;
             for (auto const &exponent : allXi) {
-                divisor = divisor + (exponent * NTL::power(factor.prime, y));
+                divisor = divisor + NTL::MulMod(exponent, NTL::power(factor.prime, y), N);
                 y++;
             }
             g = g / divisor;
@@ -43,36 +44,14 @@ NTL::ZZ PohlingHellman::searchResult() {
             x += item;
         }
         x_factors.push_back(x);
+        std::cout << "Factor done\n";
     }
     std::cout << "I have finished to calculate x for each factor\n";
-    result = calcCRT();
-    result = result % ((N - 1) / Q);
-    return result;
-}
-
-NTL::ZZ PohlingHellman::calcCRT() {
-    NTL::ZZ result = NTL::ZZ(1); // Initialize result
-
-    // As per the Chinese remainder theorem,
-    // this loop will always break.
-    while (true) {
-        // Check if remainder of result % num[j] is
-        // rem[j] or not (for all j from 0 to k-1)
-        unsigned long i;
-        for (i = 0; i < x_factors.size(); i++) {
-            if (result % x_factors.at(i) != factors.at(i).result) {
-                break;
-            }
-        }
-        // If all remainders matched, we found result
-        if (i == x_factors.size()) {
-            break;
-//            return result;
-        }
-
-        // Else try next number
-        result++;
+    for (unsigned long i = 0; i < x_factors.size() - 1; i++) {
+        result = result +
+                 NTL::CRT(x_factors.at(i), x_factors.at(i + 1), factors.at(i).result, factors.at(i + 1).result);
     }
-
+//    result = calcCRT();
+    result = result % ((N - 1) / Q);
     return result;
 }
