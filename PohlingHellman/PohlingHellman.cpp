@@ -17,15 +17,15 @@ NTL::ZZ PohlingHellman::searchResult() {
         /*
         * Search for x
         */
-        g = NTL::PowerMod(g, NTL::power(factor.prime, factor.exponent - 1), N);
-        h = NTL::PowerMod(h, NTL::power(factor.prime, factor.exponent - 1), N);
+        g = NTL::PowerMod(g, NTL::PowerMod(factor.prime, factor.exponent - 1, N), N);
+        h = NTL::PowerMod(h, NTL::PowerMod(factor.prime, factor.exponent - 1, N), N);
         PollarRho pollarRho(g, h, N, N - 1);
         std::cout << std::endl;
         std::cout << g << "^x=" << h << "mod" << N;
         x = pollarRho.searchXParallelPollard();
         allXi.push_back(x);
 #pragma omp parallel for schedule(dynamic)
-        for (long i = factor.exponent - 2; i > 0; i++) {
+        for (long i = factor.exponent - 2; i >= 0; i++) {
             tmpExp = 0;
             y = 0;
             for (auto const &exponent : allXi) {
