@@ -15,8 +15,8 @@ NTL::ZZ PohlingHellman::searchResult() {
     std::vector<NTL::ZZ> allXi;
     long y = 0;
     for (const auto &factor:factors) {
-        g = alpha ^ (N / factor.result);
-        h = beta ^ (N / factor.result);
+        g = NTL::PowerMod(alpha, (N / factor.result), N);
+        h = NTL::PowerMod(beta, (N / factor.result), N);
         /*
         * Search for x
         */
