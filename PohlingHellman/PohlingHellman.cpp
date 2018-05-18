@@ -32,7 +32,7 @@ NTL::ZZ PohlingHellman::searchResult() {
                 tmpExp = tmpExp + NTL::MulMod(exponent, NTL::power(factor.prime, y), N);
                 y++;
             }
-            h = NTL::MulMod(h, NTL::PowerMod(h, -tmpExp, N), N);
+            h = NTL::PowerMod(NTL::MulMod(h, NTL::PowerMod(h, -tmpExp, N), N), i, N);
             pollarRho.setNewValues(g, h, factor.result);
             x = pollarRho.searchXParallelPollard();
             allXi.push_back(x);
