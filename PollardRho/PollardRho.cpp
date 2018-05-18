@@ -67,7 +67,7 @@ NTL::ZZ PollardRho::searchXParallelPollard() {
                         value tmp_result = {a, b};
                         collisions.insert({x, tmp_result});
                     }
-                    break;
+                    if (result != 0) break;
                 }
             }
         }

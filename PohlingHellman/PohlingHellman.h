@@ -8,8 +8,7 @@
 
 #include <vector>
 #include "../DiscreteLog.h"
-//#include "../PollardRho/PollardRho.h"
-#include "../pollard.hpp"
+#include "../PollardRho/PollardRho.h"
 
 static long factorsLength = 35;
 
@@ -51,20 +50,20 @@ public:
             }
             N = N + 1; // +1 to make it odd and this should be prime
         } while (NTL::ProbPrime(N, 10000));
-//        N = 8101;
-//        alpha = 6;
-//        x = 6689;
-//        beta = 7531;
         alpha = NTL::RandomBnd(N - 2) + 2;
         x = NTL::RandomBnd(N - 2) + 1;
         beta = NTL::PowerMod(alpha, x, N);
-//        factors.clear();
-//        Factor factor{NTL::ZZ(2), 2, NTL::power(NTL::ZZ(2), 2)};
-//        Factor factor1{NTL::ZZ(3), 4, NTL::power(NTL::ZZ(3), 4)};
-//        Factor factor2{NTL::ZZ(5), 2, NTL::power(NTL::ZZ(5), 2)};
-//        factors.push_back(factor);
-//        factors.push_back(factor1);
-//        factors.push_back(factor2);
+        N = 8101;
+        alpha = 6;
+        x = 6689;
+        beta = 7531;
+        factors.clear();
+        Factor factor{NTL::ZZ(2), 2, NTL::power(NTL::ZZ(2), 2)};
+        Factor factor1{NTL::ZZ(3), 4, NTL::power(NTL::ZZ(3), 4)};
+        Factor factor2{NTL::ZZ(5), 2, NTL::power(NTL::ZZ(5), 2)};
+        factors.push_back(factor);
+        factors.push_back(factor1);
+        factors.push_back(factor2);
     }
 
     NTL::ZZ searchResult();
